@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mnjz/core/utils/helpers/extensions.dart';
 import 'package:mnjz/features/home/data/models/product_model.dart';
 
@@ -10,9 +11,14 @@ import '../../../../core/utils/components/error_widget_placeholder.dart';
 import '../controllers/home_cubit.dart';
 import '../widgets/product_list_item.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController searchController = TextEditingController();
 
   int calculateCrossAxisCount(BuildContext context) {
@@ -22,96 +28,81 @@ class HomeScreen extends StatelessWidget {
     return crossAxisCount > 0 ? crossAxisCount : 1;
   }
 
+  List<Widget> courses = [
+    CircleAvatar(child: Text('AA'),radius: 60,),
+    CircleAvatar(child: Text('AA'),radius: 60,),
+    CircleAvatar(child: Text('AA'),radius: 60,),
+    CircleAvatar(child: Text('AA'),radius: 60,),
+    CircleAvatar(child: Text('AA'),radius: 60,),
+
+  ];
+@override
+  void initState() {
+    // TODO: implement initState
+  generateListOfIndexes();
+  courses.map((e) => buildItem(courses.indexOf(e)));
+  for(int i =0 ;i<courses.length ; i++){
+    buildItem(i);
+  }
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     // Listen to scroll events
     final homeCubit = BlocProvider.of<HomeCubit>(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF15141F),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-          child: Column(
-            children: [
-              const Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: CustomText(
-                      text: 'Find Products, Categories,\nand more..',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-              20.ph,
-              CustomTextField(
-                controller: searchController,
-                borderRadius: 20,
-                borderColor: Colors.white,
-                prefixIcon: const Icon(
-                  Icons.search_rounded,
-                  color: Colors.white,
-                ),
-                hint: 'Search products..',
-                onChange: (query) {
-                  homeCubit.searchProducts(query!);
-                },
-                onEditComplete: () {
-                  homeCubit.searchProducts(searchController.text);
-                },
-              ),
-              16.ph,
-              Expanded(child: BlocBuilder<HomeCubit, HomeState>(
-                builder: (context, state) {
-                  if (state is HomeProductsLoadingState) {
-                    return const CustomLoadingIndicator();
-                  }
-                  if (state is HomeProductsErrorState) {
-                    print('error is :${state.errorType.name}');
-                    return ErrorWidgetPlaceHolder(
-                      errorState: state.errorType,
-                      errorMsg: state.msg,
-                      btnFunction: () {
-                        homeCubit.getHomeProducts();
-                      },
-                    );
-                  }
-                  List<ProductModel> products = [];
-                  if (state is HomeProductsSuccessState) {
-                    products = state.products;
-                  } else if (state is HomeProductsErrorState) {
-                    products = [];
-                  }
 
-                  return RefreshIndicator(
-                    color: Colors.white,
-                    onRefresh: () async {
-                      homeCubit.getHomeProducts();
-                    },
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: calculateCrossAxisCount(context),
-                        childAspectRatio: 0.55,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                      ),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        return CustomGridItem(
-                          product: products[index],
-                        );
-                      },
-                    ),
-                  );
-                },
-              )),
-            ],
+      body: SafeArea(
+        child: Container(
+          width: MediaQuery.sizeOf(context).width,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: routeColumnChildren,
+              ),
+            ),
           ),
-        ),
+        )
       ),
     );
+  }
+
+  List<int> indexesForRoute1 = [];
+
+  List<int> indexesForRoute2 = [];
+
+  List<int> indexesForRoute3 = [];
+
+  List<Widget> routeColumnChildren =[];
+
+  generateListOfIndexes(){
+    for(int i=0; i<10;i++) {
+      int eq = 1 + (indexesForRoute1.length ) * 3;
+      indexesForRoute1.add(eq);
+      int eq2 = 2 + (indexesForRoute2.length ) * 3;
+      indexesForRoute2.add(eq2);
+      int eq3 = 3 + (indexesForRoute3.length ) * 3;
+      indexesForRoute3.add(eq3);
+    }
+  }
+
+  buildItem(index){
+    print('index : ${index}');
+   if(indexesForRoute1.contains(index)){
+     print('I am in route 1');
+     routeColumnChildren.add(Align(alignment:Alignment.centerRight,child: SvgPicture.asset('assets/images/route1.svg')));
+   }else if (indexesForRoute2.contains(index)){
+     print('I am in route 2');
+     routeColumnChildren.add(Align(alignment:Alignment.center,child: SvgPicture.asset('assets/images/route2.svg')));
+   }else if(indexesForRoute3.contains(index)){
+     print('I am in route 3');
+     routeColumnChildren.add(Align(alignment:Alignment.centerLeft,child:
+     SvgPicture.asset
+       ('assets/images/route3.svg')));
+   }
   }
 }

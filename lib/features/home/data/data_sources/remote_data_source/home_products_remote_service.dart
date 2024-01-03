@@ -1,7 +1,7 @@
 import 'package:mnjz/features/home/data/models/product_model.dart';
 
 import '../../../../../../../../core/networking/api_constants.dart';
-import '../../../../../../../../core/networking/network_service.dart';
+import '../../../../../core/services/network_service.dart';
 import '../../../../../../../../core/networking/remote_response.dart';
 
 class HomeProductsRemoteService {

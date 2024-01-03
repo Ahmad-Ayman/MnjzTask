@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:mnjz/core/networking/remote_response.dart';
 
 import '../utils/helpers/enums.dart';
-import 'interceptors.dart';
+import '../networking/interceptors.dart';
 
 /// A Base Remote Service for all the app.
 ///

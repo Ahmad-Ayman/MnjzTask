@@ -16,6 +16,7 @@ class HomeCubit extends Cubit<HomeState> {
   final GetHomeProductsUseCase getHomeProductsUseCase;
 
   List<ProductModel> allProducts = [];
+  List<String> categories = [];
 
   void getHomeProducts() async {
     emit(HomeProductsLoadingState());
